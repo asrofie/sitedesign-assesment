@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { addUser, deleteUser, fetchUsers, updateUser } from '@src/service/user';
+import { deleteUser, fetchUsers } from '@src/service/user';
 
 const authStore = useAuthStore();
 const handleLogout = async () => {
@@ -67,45 +67,7 @@ const changeModeForm = (val: boolean, user: any = null) => {
     form.value = user;
   }
 }
-const handleUpdateUser = async () => {
-  if (form.value.id === 'xxx') {
-    await handleAddUser();
-    return;
-  }
-  loading.value = true;
-  try {
-    const res = await updateUser(form.value);
-    if (res.success) {
-      await getUsers();
-      changeModeForm(false);
-    } else {
-      error.value = res.message;
-    }
-  } catch (err) {
-    error.value = "Something went wrong";
-  }
-  loading.value = false;
-}
-const handleAddUser = async () => {
-  loading.value = true;
-  try {
-    let data = {
-      name: form.value.name,
-      email: form.value.email,
-      password: form.value.password
-    };
-    const res = await addUser(data);
-    if (res.success) {
-      await getUsers();
-      changeModeForm(false);
-    } else {
-      error.value = res.message;
-    }
-  } catch (err) {
-    error.value = "Something went wrong";
-  }
-  loading.value = false;
-}
+
 </script>
 <template>
   <div class="container-fluid">
@@ -168,58 +130,7 @@ const handleAddUser = async () => {
         </table>
       </div>
       <div v-if="modeForm" class="col-md-10 p-3">
-        <h5 class="mb-3">{{ form.id === 'xxx' ? 'Add User' : 'Edit User' }}</h5>
-        <div v-if="modeForm && error" class="alert-warning alert-dismissible fade show">{{ error }}></div>
-        <form class="space-y-4" @submit.prevent="handleUpdateUser">
-          <input type="hidden" v-model="form.id"></input>
-          <div class="form-group mb-2">
-            <label class="form-label block mb-1 text-sm font-medium text-gray-700">Name</label>
-            <input
-              v-model="form.name"
-              type="name"
-              class="form-control w-auto px-4 py-2 border border-gray-300 rounded-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your name"
-              :disabled="loading"
-            >
-          </div>
-          <div class="form-group mb-2">
-            <label class="form-label block mb-1 text-sm font-medium text-gray-700">Email</label>
-            <input
-              v-model="form.email"
-              type="email"
-              class="form-control w-auto px-4 py-2 border border-gray-300 rounded-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your email"
-              :disabled="loading"
-            >
-          </div>
-          <div class="form-group mb-2">
-            <label class="form-label block mb-1 text-sm font-medium text-gray-700">Password</label>
-            <input
-              v-model="form.password"
-              type="password"
-              class="form-control w-auto px-4 py-2 border border-gray-300 rounded-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your password"
-              :disabled="loading"
-            >
-          </div>
-          <div class="form-group w-auto mb-2 flex flex-row justify-between items-center">
-            <button
-              :disabled="loading"
-              type="submit"
-              class="form-control w-auto btn btn-outline-success me-2 rounded-0"
-            >
-              {{ form.id === 'xxx' ? 'Add User' : 'Update User'  }}
-            </button>
-            <button
-              :disabled="loading"
-              type="reset"
-              class="form-control w-auto btn btn-outline-danger rounded-0"
-              @click="changeModeForm(false)"
-            >
-              Back to List
-            </button>
-          </div>
-        </form>
+        <user-form v-model="form" @onBack="changeModeForm(false)"></user-form>
       </div>
     </div>
   </div>
