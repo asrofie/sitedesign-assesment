@@ -1,0 +1,371 @@
+openapi: 3.0.0
+info:
+  title: "Site Design API"
+  version: 1.0.0
+  description: API Documentation
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Development server
+tags:
+  - name: "Authentication"
+    description: "Registration, login, forgot password"
+  - name: "User"
+    description: "Manage user data"
+components:
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Page number
+      schema:
+        type: integer
+        example: 1
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Number of items per page
+      schema:
+        type: integer
+        example: 10
+    Sort:
+      name: sort
+      in: query
+      description: >
+        Sort order:
+        * `asc` - Ascending, from A to Z
+        * `desc` - Descending, from Z to A
+      schema:
+        type: string
+        enum: [asc, desc, null]
+        example: asc
+    SortBy:
+      name: sort_by
+      in: query
+      description: >
+        Sort by field:
+      schema:
+        type: string
+        example: name
+    SearchText:
+      name: search
+      in: query
+      description: Search by text
+      schema:
+        type: string
+  schemas:
+    Sort:
+      type: string
+      nullable: true
+      enum: [asc, desc, null]
+      description: >
+        Sort order:
+        * `asc` - Ascending, from A to Z
+        * `desc` - Descending, from Z to A
+    Limit:
+      type: integer
+      minimum: 1
+      maximum: 1000
+    DataId:
+      type: string
+      example: aabb11ccc
+    User:
+      type: object
+      description: User information
+      properties:
+        name:
+          type: string
+          example: Joen Doe
+        email:
+          type: string
+          example: usertest@gmail.com
+    UserWithId:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+        - properties:
+            id:
+              $ref: "#/components/schemas/DataId"
+    UserFormWithId:
+      allOf:
+        - $ref: "#/components/schemas/UserWithId"
+        - type: object
+        - properties:
+            password:
+              type: string
+              example: "123456"
+    UserForm:
+      allOf:
+        - $ref: "#/components/schemas/User"
+        - type: object
+        - properties:
+            password:
+              type: string
+              example: "123456"
+  responses:
+    Generic400:
+      description: Unable to find data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: "FALSE means there is an error"
+              data:
+                  type: object
+              message:
+                type: string
+                description: Error description if any
+    Generic200:
+      description: Unable to find data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                description: "FALSE means there is an error"
+              data:
+                  type: object
+              message:
+                type: string
+                description: Error description if any
+    Generic200Pagination:
+      description: Successfull delete data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/responses/Generic200"
+            type: object
+            properties:
+              data:
+                type: object
+                description: Data
+              pagination:
+                type: object
+                description: Pagination parameters
+                properties:
+                  total:
+                    type: integer
+                    description: Total of data
+                    example: 30
+                  page:
+                    type: integer
+                    description: Selected page
+                    example: 2
+                  limit:
+                    type: integer
+                    description: Row per page
+                    example: 10
+                  total_pages:
+                    type: integer
+                    description: Total of page
+                    example: 5
+    Generic200ForDelete:
+      description: Successfull delete data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/responses/Generic200"
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT # optional, arbitrary value for documentation purposes
+      description: "Bearer token1234"
+paths:
+  /auth/init:
+    post:
+      tags: [Authentication]
+      summary: User initialization
+      responses:
+        200:
+          description: initialization successful
+        401:
+          description: initialization failed
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@gmail.com
+                password:
+                  type: string
+                  format: password
+                  example: "admin123!@#$"
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    allOf:
+                      - $ref: "#/components/schemas/User"
+                      - type: object
+                  token:
+                    type: string
+                    description: JWT token
+        401:
+          description: Invalid credentials
+  /admin/user/me:
+    get:
+      security:
+        - bearerAuth: []
+      tags: [User]
+      responses:
+        200:
+          description: Active user information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    allOf:
+                      - $ref: "#/components/schemas/User"
+                      - type: object
+  /admin/user:
+    get:
+      tags:
+        - "User"
+      summary: Get user data
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Sort"
+        - $ref: "#/components/parameters/SortBy"
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        200:
+          description: Successfully fetched data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/responses/Generic200Pagination"
+                  - type: object
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/UserWithId"
+        400:
+          $ref: "#/components/responses/Generic400"
+    post:
+      tags:
+        - "User"
+      summary: Create user data
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: "#/components/schemas/UserForm"
+              required:
+                - email
+                - password
+                - name
+      responses:
+        200:
+          description: Successfully created data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/responses/Generic200"
+                  - type: object
+                  - properties:
+                      data:
+                        type: object
+                        $ref: "#/components/schemas/UserWithId"
+        400:
+          $ref: "#/components/responses/Generic400"
+    put:
+      tags:
+        - "User"
+      summary: Update user data
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: "#/components/schemas/UserFormWithId"
+              required:
+                - id
+      responses:
+        200:
+          description: Successfully updated data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/responses/Generic200"
+                  - type: object
+                  - properties:
+                      data:
+                        $ref: "#/components/schemas/UserWithId"
+        400:
+          $ref: "#/components/responses/Generic400"
+  /admin/user/delete-user:
+    post:
+      tags:
+        - "User"
+      summary: Delete user data
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  $ref: "#/components/schemas/DataId"
+      responses:
+        200:
+          description: Successfully deleted data
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/responses/Generic200"
+                  - type: object
+                  - properties:
+                      data:
+                        type: string
+                        $ref: "#/components/schemas/DataId"
+        400:
+          $ref: "#/components/responses/Generic400"
