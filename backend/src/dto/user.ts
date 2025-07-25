@@ -3,6 +3,7 @@ export interface IUser {
   name: string;
   email: string;
   password?: string;
+  deleted_at?: Date | null;
 }
 
 export interface IUserLogin {

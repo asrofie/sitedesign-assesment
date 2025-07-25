@@ -7,6 +7,7 @@ const SelectQueryUser = {
   id: true,
   name: true,
   email: true,
+  deleted_at: true,
 };
 
 function mapToDto(data: any): IUser {
@@ -14,6 +15,7 @@ function mapToDto(data: any): IUser {
     id: data.id,
     name: data.name,
     email: data.email,
+    deleted_at: data.deleted_at,
   };
 }
 
