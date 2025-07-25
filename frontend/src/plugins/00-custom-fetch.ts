@@ -8,7 +8,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const customFetch = async (url: string, options: any = {}) => {
         
         const authExcludedRoutes = [
-            '/api/auth/login',
+            '/auth/login',
         ];
         const requiresAuth = !authExcludedRoutes.includes(url);
 
@@ -25,7 +25,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         }
         
         let response;
-
         try {
             response = await $fetch(url, options);
         } catch (err: any) {

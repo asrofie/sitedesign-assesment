@@ -1,0 +1,3 @@
+<template>
+  <AdminPage></AdminPage>
+</template>

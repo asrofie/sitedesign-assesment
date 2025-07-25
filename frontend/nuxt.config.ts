@@ -12,11 +12,16 @@ const { API_BASE_URL } = getProxyUrl(
 export default defineNuxtConfig({
   // Nuxt Compatibility
   compatibilityDate: "2025-02-04",
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   // Modules
   modules: [
-    "@pinia/nuxt",
+    '@pinia/nuxt', {
+      autoImports: [
+        'defineStore',
+        'acceptHMRUpdate'
+      ]
+    },
     "pinia-plugin-persistedstate",
     "nuxt-lodash",
   ],
@@ -30,6 +35,10 @@ export default defineNuxtConfig({
 
   // pinia: { autoImports: ["defineStore"] },
   // Project Structure
+  css: [
+    'bootstrap/dist/css/bootstrap.min.css',
+    '~/assets/main.scss',
+  ],
   pages: true,
   ssr: true,
   srcDir: "src/",
