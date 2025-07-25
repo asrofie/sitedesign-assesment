@@ -1,4 +1,5 @@
 import { authService } from "@src/service";
+import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", {
     state: (): any => ({
@@ -12,6 +13,9 @@ export const useAuthStore = defineStore("auth", {
     actions: {
       setLoading(value: boolean) {
         this.loading = value;
+      },
+      getCurrentUser() {
+        return this.user;
       },
       async handleSuccessfulLogin(response: any) {
           const tokenCookie = useCookie("auth_token", {
@@ -55,6 +59,7 @@ export const useAuthStore = defineStore("auth", {
         const expiryCookie = useCookie("auth_token_expiry");
         if (tokenCookie.value && expiryCookie.value) {
           const currentTimestamp = Math.floor(Date.now() / 1000);
+          this.user = jwtDecode(tokenCookie.value); 
           return (Number(expiryCookie.value) > currentTimestamp);
         }
         return false;
