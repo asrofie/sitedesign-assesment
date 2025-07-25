@@ -38,32 +38,32 @@ onMounted(() => {
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-      <h1 class="mb-6 text-2xl font-bold text-center text-gray-800">LOGIN APP</h1  1>
+      <h1 class="text-2xl font-bold text-center text-gray-800">LOGIN APP</h1  1>
       <div v-if="res && !res.status" class="alert-warning alert-dismissible fade show">{{ res.message }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="resetResponse">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <form class="space-y-4" @submit.prevent="handleLogin">
-        <div>
-          <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
+        <div class="form-group mb-2">
+          <label class="form-label block mb-1 text-sm font-medium text-gray-700">Email</label>
           <input
             v-model="form.email"
             type="email"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="form-control w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Enter your email"
             :disabled="loading"
           >
         </div>
         
-        <div>
-          <label class="block mb-1 text-sm font-medium text-gray-700">Password</label>
+        <div class="form-group mb-2">
+          <label class="form-label block mb-1 text-sm font-medium text-gray-700">Password</label>
           <input
             v-model="form.password"
             type="password"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="form-control w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Enter your password"
             :disabled="loading"
           >
@@ -72,7 +72,7 @@ onMounted(() => {
         <button
           :disabled="loading"
           type="submit"
-          class="w-full px-4 py-2 text-black bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          class="form-control w-full px-4 py-2 text-black bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Login
         </button>
