@@ -28,16 +28,8 @@ const resetResponse = () => {
 }
 
 const handleLogin = async () => {
-  console.log('Login attempt with:', form.value)
-  // Add your authentication logic here
   loading.value = true;
   await authStore.login({email: form.value.email, password: form.value.password}, setLoading, handleResponse, handleError);
-  // if (authStore.isAuthenticated) {
-  //   navigateTo("/admin")
-  //   return true;
-  // } else {
-    
-  // };
 }
 onMounted(() => {
 });
