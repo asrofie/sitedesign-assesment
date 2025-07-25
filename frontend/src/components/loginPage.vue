@@ -39,9 +39,9 @@ onMounted(() => {
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
       <h1 class="my-12 text-2xl font-bold text-center text-gray-800">LOGIN APP</h1  1>
-      <div v-if="res && !res.status" class="alert-warning alert-dismissible fade show">{{ res.message }}
+      <div v-if="res && !res.status" class="alert alert-danger alert-dismissible fade show">{{ res.message }}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="resetResponse">
-          <span aria-hidden="true">&times;</span>
+          &times;
         </button>
       </div>
       <form class="space-y-4" @submit.prevent="handleLogin">

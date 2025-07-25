@@ -25,6 +25,8 @@ const resetForm = () => {
   }
 };
 
+const currentUser = ref<any>(null);
+
 const getUsers = async () => {
   loading.value = true;
   try {
@@ -46,6 +48,8 @@ onMounted(async () => {
     return true;
   }
   await getUsers();
+  currentUser.value = authStore.getCurrentUser();
+  console.log("currentUser", currentUser.value);
 });
 const handleDeleteUser = async (id: string) => {
   loading.value = true;
@@ -119,8 +123,8 @@ const changeModeForm = (val: boolean, user: any = null) => {
               <td>{{ user.email }}</td>
               <td>{{ user.deleted_at === null ? 'Active' : 'Inactive' }}</td>
               <td>
-                <button @click="changeModeForm(true, user)" class="btn btn-sm btn-outline-warning me-1 rounded-0">update</button>
-                <button @click="handleDeleteUser(user.id)" class="btn btn-sm btn-outline-danger rounded-0">delete</button>
+                <button @click="changeModeForm(true, user)" v-if="user.deleted_at == null" class="btn btn-sm btn-outline-warning me-1 rounded-0">update</button>
+                <button @click="handleDeleteUser(user.id)" v-if="currentUser.id != user.id && user.deleted_at == null" class="btn btn-sm btn-outline-danger rounded-0">delete</button>
               </td>
             </tr>
             <tr v-else-if="!loading && !users || users.length === 0">
