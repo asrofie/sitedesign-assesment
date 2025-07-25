@@ -1,0 +1,36 @@
+export interface IUser {
+    id: number;
+    org_id?: number;
+    employee_id?: number;
+    user_type_id: number;
+    contact_id?: number;
+    user_name?: string;
+    email: string;
+    chat_identity: string;
+    expiration_date?: string;
+    email_verified?: number;
+    image_path: string;
+    level_id: number;
+    zone_id: number;
+    language: string;
+    is_blocked: number;
+    last_password_changed?: any;
+    last_login_date?: string;
+    last_activity_date?: string;
+    invite_token?: any;
+    is_active: number;
+    is_test: number;
+    date_created: string;
+    date_modified: string;
+    created_by: number;
+    modified_by: number;
+    api_key?: any;
+    first_name: string;
+    last_name: string;
+    middle_name: string;
+    display_name_format: string;
+    display_name: string;
+    firebase_uid: string;
+    auth_provider: string;
+    shared_users?: any;
+}
